@@ -1,12 +1,13 @@
 pipeline {
     agent any
-    stages('Build') {
-        steps {
-            sh 'echo "Hello World"'
-            sh '''
-                echo "Multiline shell steps works too"
-                ls -lah
-            '''
+    stages('Upload to AWS') {
+       steps {
+        	withAWS(region:'us-west-2', credentials:'aws-static')
+            {
+            sh 'echo "Uploading content with AWS creds"'
+            s3Upload(file:'index.html', bucket:'jenkins-pipeline-on-aws-partha', path:'s3://jenkins-pipeline-on-aws-partha/index.html')
+
+            }
         }
     }
 }
